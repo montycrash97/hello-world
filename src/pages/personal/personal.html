@@ -1,0 +1,34 @@
+<!--
+  Generated template for the FavoritePage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Personal</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+  <ion-list>
+    <ion-item-sliding *ngFor="let c of auth.user.favorites">
+      <ion-item>
+        <ion-thumbnail item-start>
+          <img [src]="c.image">
+        </ion-thumbnail>
+        <h2>{{ c.name }}</h2>
+        <p *ngIf="c.contains">Contains: {{ c.contains }} </p>
+      </ion-item>
+      <ion-item-options side="right">
+        <button ion-button (click)="dislikeDish(c)" color="danger">
+          <ion-icon name="close"></ion-icon>
+          Dislike
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+</ion-content>

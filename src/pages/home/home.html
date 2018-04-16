@@ -1,0 +1,81 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      <div class="tinder-toggle" (click)="toggleView = !toggleView"> 
+        <div [class.active]="!toggleView"><ion-icon name="md-albums"></ion-icon></div>
+        <div [class.active]="toggleView"><ion-icon name="md-list"></ion-icon></div>
+      </div>
+    </ion-title>
+    <ion-buttons end>
+      <button (click)="openPersonal()" ion-button icon-only>
+        <ion-icon style="color:rgb(243, 80, 39);" name="person"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+  
+<ion-content class="home">
+  <div *ngIf="!toggleView" swing-stack #myswing1 [stackConfig]="stackConfig" (throwoutleft)="voteUp(false)" (throwoutright)="voteUp(true)" (throwoutdown)="voteUp(false)" (throwoutup)="voteUp(true)" id="card-stack" [style.zIndex]="-1000">
+      <ion-card #mycards1 swing-card *ngFor="let c of cards; trackBy:trackByCards; let i=index;" [style.zIndex]="-1 * i" [style.marginTop]="i === 0 ? '0px ': '12px'">
+        <ion-item>
+          <img class="image" [src]="c.image">
+          <h2>{{ c.name }}</h2>
+          <p *ngIf="c.contains">Contains: {{ c.contains }}</p>
+          <p *ngIf="c.mealtime">{{ c.mealtime }}</p>
+          <p *ngIf="c.location">Serving at {{ c.location }}</p>
+        </ion-item>
+
+        <ion-card-content *ngIf="c">
+          <ion-row class="preferences" >
+            <ion-col style="left: -40px; bottom: -15px;">
+              <img *ngIf="c.vegetarian" src="assets/imgs/vegetarian.png"/>
+            </ion-col>
+            <ion-col>
+              <ion-icon style="color:white; zoom: 2.0;" (click)="openDetail()" name="md-list-box"></ion-icon>
+            </ion-col>
+            <ion-col style="right: -40px; bottom: -15px;">
+              <img *ngIf="c.vegan" src="assets/imgs/vegan.png"/>
+            </ion-col>
+          </ion-row>
+        </ion-card-content>
+        
+      </ion-card>
+      <div class="card-actions">
+          <button class="rounded button no" (click)="voteUp(false)" ion-button icon-only>
+            <ion-icon name="close"></ion-icon>
+          </button>
+          <button class="rounded button like" (click)="voteUp(true)" ion-button icon-only>
+            <ion-icon name="heart"></ion-icon>
+          </button>
+        </div>
+    </div>
+    <div *ngIf="toggleView">
+      <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
+      <ion-list>
+        <ion-item-sliding *ngFor="let c of (searchResults ? searchResults : list); let i = index">
+          <ion-item>
+            <ion-thumbnail item-start>
+              <img [src]="c.image">
+            </ion-thumbnail>
+            <h2>{{ c.name }}</h2>
+            <h3 *ngIf="c.location">Serving at {{ c.location }}</h3>
+            <p *ngIf="c.contains">Contains: {{ c.contains }} </p>
+            <ion-icon *ngIf="c.favorited" name="md-heart" style="color: red;" item-end></ion-icon>
+          </ion-item>
+          <ion-item-options side="right">
+            <button *ngIf="!c.favorited" ion-button (click)="likeDish(c, i)" color="primary">
+              <ion-icon name="heart"></ion-icon>
+              Like
+            </button>
+            <button *ngIf="c.favorited" ion-button (click)="dislikeDish(c, i)" color="danger">
+              <ion-icon name="close"></ion-icon>
+              Dislike
+            </button>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-list>
+      <ion-infinite-scroll *ngIf="!searchResults" (ionInfinite)="doInfinite($event)">
+        <ion-infinite-scroll-content></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+    </div>
+</ion-content>
